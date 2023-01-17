@@ -1,3 +1,4 @@
+upstream_servers: No
 servers:
   - listen: 443
     server_name: subdomain1.example.com
@@ -9,3 +10,12 @@ servers:
 #    server_name: subdomain2.example2.com
 #    proxy_pass: http://127.0.0.1:8001
 #    ssl_certificate: example2_com
+
+php_servers: Yes
+php_socks:
+  - listen: 443
+    server_name: php_fpm1.example.com
+    name: php_fpm8
+    sock: unix:/run/php/php8.1-fpm.sock
+    ssl_certificate: example_wildcard_2022
+

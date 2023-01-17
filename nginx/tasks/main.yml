@@ -8,11 +8,22 @@
   with_fileglob:
     - files/ssl/*
 
-- name: configure nginx
+- name: configure nginx for upstream servers
   template:
-    src: files/nginx.conf.j2
+    src:  files/nginx.conf.j2
     dest: /etc/nginx/nginx.conf
     owner: root
     group: root
     mode: 0644
+  when: upstream_servers
+  notify: restart nginx
+
+- name: configure nginx for php sockets
+  template:
+    src:  files/nginx.php.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: php_servers
   notify: restart nginx
