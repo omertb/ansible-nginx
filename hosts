@@ -1,0 +1,8 @@
+all:
+  hosts:
+    local_vm:
+      ansible_host: 127.0.0.1
+      ansible_port: 32222
+      ansible_user: my_username_on_server
+      ansible_become_password: "{{ su_password }}"
+      ansible_become_method: su

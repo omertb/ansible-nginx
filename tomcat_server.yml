@@ -1,0 +1,48 @@
+- name: add new user, install sudo, jdk17 and tomcat9
+  hosts: local_vm
+  gather_facts: no
+  become: yes
+
+  tasks:
+  - name: ensure sudo is installed
+    apt:
+      pkg:
+        - sudo
+        - openjdk-17-jdk
+        - tomcat9
+        - nginx
+      install_recommends: no
+
+  - name: add a new user
+    user:
+      name: "{{ new_user }}"
+      shell: /bin/bash
+      groups: sudo
+      password: "{{ new_pass | password_hash('sha512') }}"
+
+  - name: Find Java home
+    shell: "java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | awk '{print $3}'"
+    register: java_home
+    notify: add java_home at the end of /etc/default/tomcat9
+
+
+  handlers:
+  - name: add java_home at the end of /etc/default/tomcat9
+    lineinfile:
+      path: /etc/default/tomcat9
+      state: present
+      regexp: '^JAVA_HOME='
+      line: 'JAVA_HOME={{ java_home.stdout.rstrip() }}'
+    notify: restart tomcat if changed
+  
+  - name: restart tomcat if changed
+    service:
+      name: tomcat9
+      state: restarted
+  
+- name: Nginx Configuration
+  hosts: local_vm
+  gather_facts: no
+  become: yes
+  roles:
+    - nginx

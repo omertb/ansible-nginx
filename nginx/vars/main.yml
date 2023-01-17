@@ -1,0 +1,11 @@
+servers:
+  - listen: 443
+    server_name: subdomain1.example.com
+    name: tomcat_backend
+    upstreams: 
+      - 127.0.0.1:8080
+    ssl_certificate: example_wildcard_2022
+#  - listen: 443
+#    server_name: subdomain2.example2.com
+#    proxy_pass: http://127.0.0.1:8001
+#    ssl_certificate: example2_com
